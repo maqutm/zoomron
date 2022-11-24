@@ -30,6 +30,7 @@ Sub cmd_gen_source()
     gen_pass = 2
 
     Dim as integer outf = FreeFile
+    Dim as string out_file_name
     Print #2, "Output file name:"; 
     Line Input #1, out_file_name
 
