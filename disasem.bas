@@ -1,72 +1,69 @@
-#include "inc/declare.bi"
-#include "inc/memory.bi"
-#include "inc/label.bi"
-#include "inc/message.bi"
-#include "inc/disasem_share.bi"
-#include "inc/disasem.bi"
-#include "inc/disasem_cb.bi"
-#include "inc/disasem_ixy.bi"
-#include "inc/disasem_ed.bi"
-#include "inc/disasem_ixy_cb.bi"
-#include "inc/disasem_util.bi"
-#include "inc/cmd_readfile.bi"
-#include "inc/cmd_dumpmemory.bi"
-#include "inc/cmd_disasem.bi"
-#include "inc/cmd_gensource.bi"
-#include "inc/cmd_setlabel.bi"
-#include "inc/cmd_setmessage.bi"
-#include "inc/cmd_dispXXX.bi"
+#INCLUDE "inc/declare.bi"
+#INCLUDE "inc/memory.bi"
+#INCLUDE "inc/label.bi"
+#INCLUDE "inc/message.bi"
+#INCLUDE "inc/disasem_share.bi"
+#INCLUDE "inc/disasem.bi"
+#INCLUDE "inc/disasem_cb.bi"
+#INCLUDE "inc/disasem_ixy.bi"
+#INCLUDE "inc/disasem_ed.bi"
+#INCLUDE "inc/disasem_ixy_cb.bi"
+#INCLUDE "inc/disasem_util.bi"
+#INCLUDE "inc/cmd_readfile.bi"
+#INCLUDE "inc/cmd_dumpmemory.bi"
+#INCLUDE "inc/cmd_disasem.bi"
+#INCLUDE "inc/cmd_gensource.bi"
+#INCLUDE "inc/cmd_setlabel.bi"
+#INCLUDE "inc/cmd_setmessage.bi"
+#INCLUDE "inc/cmd_dispXXX.bi"
 
-buffer = Allocate( buffer_size )
+OPEN CONS FOR INPUT AS #1
+OPEN CONS FOR OUTPUT AS #2
 
-buffer_start = 0
-buffer_end = 0
-
-Open Cons For Input As #1
-Open Cons For Output As #2
-
-Dim as string Com = ""
+DIM AS STRING COM = ""
 DO
 
-    Print #2, "Execute command:"; 
-    Line Input #1, Com
+    PRINT #2, "Execute command:"; 
+    LINE INPUT #1, COM
 
-    Select Case Left(Com, 1)
-    Case "L"
+    SELECT CASE LEFT(COM, 1)
+    CASE "L"
         cmd_read_file
 
-    Case "0"
+    CASE "0"
         cmd_dump_memory
 
-    Case "1"
+    CASE "1"
         cmd_disasem
 
-    Case "2"
+    CASE "2"
         cmd_gen_source
 
-    Case "A"
+    CASE "A"
         cmd_set_label
 
-    Case "B"
+    CASE "B"
         cmd_set_message
 
-    Case "X"
+    CASE "X"
         cmd_disp_adrs
 
-    Case "Y"        
+    CASE "Y"        
         cmd_disp_label
 
-    Case "Z"
+    CASE "Z"
         cmd_disp_message
 
-    Case "Q"
-        Exit DO
+    CASE "Q"
+        EXIT DO
 
-    End Select
+    END SELECT
 LOOP
 
-deallocate( buffer )
-Print #2, "end."
+IF buffer_end > 0 THEN
+    DEALLOCATE( buffer )
+END IF
+PRINT #2, "end."
 
-Close
+CLOSE
 'sleep

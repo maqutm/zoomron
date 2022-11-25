@@ -1,84 +1,84 @@
-function disasem_ixy(mem as ubyte ptr, st as integer, ixy as integer) as integer
+FUNCTION disasem_ixy(mem AS UBYTE PTR, st AS INTEGER, ixy AS INTEGER) AS INTEGER
 	
-	dim as ubyte c = mem[st]
-	dim as integer d = (c and &hc0) / 64
-	dim as integer r0 = (c and &h38) / 8
-	dim as integer r1 = (c and &h7)
-	dim as integer h = (c and &hf0) / 16
-	dim as integer l = c and &hf
+	DIM AS UBYTE c = mem[st]
+	DIM AS INTEGER d = (c AND &hc0) / 64
+	DIM AS INTEGER r0 = (c AND &h38) / 8
+	DIM AS INTEGER r1 = (c AND &h7)
+	DIM AS INTEGER h = (c AND &hf0) / 16
+	DIM AS INTEGER l = c AND &hf
 	
-	If d = 0 and l = 9 Then
-		out_text "ADD " + ixreg(ixy) + "," + ixreg16a(h and 3, ixy)
-	ElseIf d = 0 and (r0 = 4 or r0 = 5) and r1 = 4 Then
+	IF d = 0 AND l = 9 THEN
+		out_text "ADD " + ixreg(ixy) + "," + ixreg16a(h AND 3, ixy)
+	ELSEIF d = 0 AND (r0 = 4 OR r0 = 5) AND r1 = 4 THEN
 		out_text "INC " + ixreg8(r0, ixy)
-	ElseIf d = 0 and (r0 = 6) and r1 = 4 Then
+	ELSEIF d = 0 AND (r0 = 6) AND r1 = 4 THEN
 		out_text "INC (" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-		return 3
-	ElseIf d = 0 and (r0 = 4 or r0 = 5) and r1 = 5 Then
+		RETURN 3
+	ELSEIF d = 0 AND (r0 = 4 OR r0 = 5) AND r1 = 5 THEN
 		out_text "DEC " + ixreg8(r0, ixy)
-	ElseIf d = 0 and (r0 = 6) and r1 = 5 Then
+	ELSEIF d = 0 AND (r0 = 6) AND r1 = 5 THEN
 		out_text "DEC (" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-		return 3
-	ElseIf d = 0 and (r0 = 4 or r0 = 5) and r1 = 6 Then
+		RETURN 3
+	ELSEIF d = 0 AND (r0 = 4 OR r0 = 5) AND r1 = 6 THEN
 		out_text "LD " + ixreg8(r0, ixy) + "," + make_numeric_constant(mem[st + 2])
-		return 3
-	ElseIf d = 0 and (r0 = 6) and r1 = 6 Then
+		RETURN 3
+	ELSEIF d = 0 AND (r0 = 6) AND r1 = 6 THEN
 		out_text "LD (" + ixreg(ixy) + dsp(mem[st + 2]) + ")," + make_numeric_constant(mem[st + 3])
-		return 3
-	ElseIf d = 0 and (h = 2) and l = 1 Then
+		RETURN 3
+	ELSEIF d = 0 AND (h = 2) AND l = 1 THEN
 		out_text "LD " + ixreg(ixy) + "," + make_label(mem[st + 2] + mem[st + 3] * 256, immediate_data)
-		return 4
-	ElseIf d = 0 and (h = 2) and l = 2 Then
+		RETURN 4
+	ELSEIF d = 0 AND (h = 2) AND l = 2 THEN
 		out_text "LD (" + make_label(mem[st + 2] + mem[st + 3] * 256, direct_access) + ")," + ixreg(ixy)
-		return 4
-	ElseIf d = 0 and (h = 2) and l = 3 Then
+		RETURN 4
+	ELSEIF d = 0 AND (h = 2) AND l = 3 THEN
 		out_text "INC " + ixreg(ixy)
-	ElseIf d = 0 and (h = 2) and l = 10 Then
+	ELSEIF d = 0 AND (h = 2) AND l = 10 THEN
 		out_text "LD " + ixreg(ixy) + ",(" + make_label(mem[st + 2] + mem[st + 3] * 256, direct_access) + ")"
-		return 4
-	ElseIf d = 0 and (h = 2) and l = 11 Then
+		RETURN 4
+	ELSEIF d = 0 AND (h = 2) AND l = 11 THEN
 		out_text "DEC " + ixreg(ixy)
-	ElseIf d = 1 and (r0 = 4 or r0 = 5) Then
+	ELSEIF d = 1 AND (r0 = 4 OR r0 = 5) THEN
 		out_text "LD " + ixreg8(r0, ixy) + "," + ixreg8(r1, ixy)
-	ElseIf d = 1 and (r0 = 6) and (r1 <> 6) Then
+	ELSEIF d = 1 AND (r0 = 6) AND (r1 <> 6) THEN
 		out_text "LD (" + ixreg(ixy) + dsp(mem[st + 2]) + ")," + ixreg8(r1, ixy)
-		return 3
-	ElseIf d = 1 and (r1 = 4 or r1 = 5)Then
+		RETURN 3
+	ELSEIF d = 1 AND (r1 = 4 OR r1 = 5)THEN
 		out_text "LD " + ixreg8(r0, ixy) + "," + ixreg8(r1, ixy)
-	ElseIf d = 1 and (r0 <> 6) and (r1 = 6) Then
+	ELSEIF d = 1 AND (r0 <> 6) AND (r1 = 6) THEN
 		out_text "LD " + ixreg8(r0, ixy) + ",(" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-		return 3
-	ElseIf d = 2 and ((r0 = 0) or (r0 = 1) or (r0 = 3)) and (r1 = 4 or r1 = 5)Then
+		RETURN 3
+	ELSEIF d = 2 AND ((r0 = 0) OR (r0 = 1) OR (r0 = 3)) AND (r1 = 4 OR r1 = 5)THEN
 		out_text calc8(r0) + " A," + ixreg8(r1, ixy)
-	ElseIf d = 2 and (r1 = 4 or r1 = 5)Then
+	ELSEIF d = 2 AND (r1 = 4 OR r1 = 5)THEN
 		out_text calc8(r0) + " " + ixreg8(r1, ixy)
-	ElseIf d = 2 and ((r0 = 0) or (r0 = 1) or (r0 = 3)) and (r1 = 6) Then
+	ELSEIF d = 2 AND ((r0 = 0) OR (r0 = 1) OR (r0 = 3)) AND (r1 = 6) THEN
 		out_text calc8(r0) + " A," + ",(" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-		return 3
-	ElseIf d = 2 and (r1 = 6) Then
+		RETURN 3
+	ELSEIF d = 2 AND (r1 = 6) THEN
 		out_text calc8(r0) + " (" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-		return 3
-	Elseif c = &hCB Then
+		RETURN 3
+	ELSEIF c = &hCB THEN
 		'IX/IY CB
-		return disasem_ixy_cb(mem, st + 1, ixy)
-	Elseif c = &hE1 Then
+		RETURN disasem_ixy_cb(mem, st + 1, ixy)
+	ELSEIF c = &hE1 THEN
 		out_text "POP " + ixreg(ixy)
-	Elseif c = &hE3 Then
+	ELSEIF c = &hE3 THEN
 		out_text "EX (SP)," + ixreg(ixy)
-	Elseif c = &hE5 Then
+	ELSEIF c = &hE5 THEN
 		out_text "PUSH " + ixreg(ixy)
-	Elseif c = &hE9 Then
+	ELSEIF c = &hE9 THEN
 		out_text "JP (" + ixreg(ixy) + ")"
-	Elseif c = &hF9 Then
+	ELSEIF c = &hF9 THEN
 		out_text "LD SP," + ixreg(ixy)
-	Else
-		if ixy = 0 Then
+	ELSE
+		IF ixy = 0 THEN
 			out_text "DB 0DDh, " + make_numeric_constant(c)
-		Else
+		ELSE
 			out_text "DB 0FDh, " + make_numeric_constant(c)
-		End If
-	end If
+		END IF
+	END IF
 	
-	return 2
+	RETURN 2
 	
-end function
+END FUNCTION

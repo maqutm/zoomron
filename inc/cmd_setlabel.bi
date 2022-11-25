@@ -1,13 +1,13 @@
-Sub cmd_set_label()
+SUB cmd_set_label()
 
-    Dim as string l0, l1, l2
-    Print #2, "LBL start:";
-    Line Input #1, l0
-    Print #2, "LBL size :";
-    Line Input #1, l1
-    Print #2, "LBL data :";
-    Line Input #1, l2
+    DIM AS STRING l0, l1, l2
+    PRINT #2, "LBL start:";
+    LINE INPUT #1, l0
+    PRINT #2, "LBL size :";
+    LINE INPUT #1, l1
+    PRINT #2, "LBL data :";
+    LINE INPUT #1, l2
     
-    make_label(Val("&h" + l0), call_label, Val(l1), Val(l2))
+    make_label(VAL("&h" + l0), call_label, VAL(l1), VAL(l2))
 
-End Sub
+END SUB

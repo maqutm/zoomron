@@ -1,25 +1,29 @@
-Sub cmd_disp_adrs()
+SUB cmd_disp_adrs()
 
-    Print #2, "ADRS: " + hex4(buffer_start + adrs_offset) + "-" + hex4(buffer_end + adrs_offset)
+    IF buffer_end = 0 THEN
+        RETURN
+    END IF
 
-End Sub
+    PRINT #2, "ADRS: " + hex4(buffer_start + adrs_offset) + "-" + hex4(buffer_end + adrs_offset)
 
-Sub cmd_disp_label()
+END SUB
 
-    if adrs_wrk_cnt > 0 Then
-        For i as integer = 0 to adrs_wrk_cnt - 1
-            Print #2, "" + hex4(adrs_wrk(i).st) + " " + Str(adrs_wrk(i).sz) + " " + Str(adrs_wrk(i).dt) + " " + Str(adrs_wrk(i).t)
-        Next
-    end if 
+SUB cmd_disp_label()
 
-End Sub
+    IF adrs_wrk_cnt > 0 THEN
+        FOR i AS INTEGER = 0 TO adrs_wrk_cnt - 1
+            PRINT #2, "" + hex4(adrs_wrk(i).st) + " " + STR(adrs_wrk(i).sz) + " " + STR(adrs_wrk(i).dt) + " " + STR(adrs_wrk(i).t)
+        NEXT
+    END IF 
 
-Sub cmd_disp_message()
+END SUB
 
-    if msg_wrk_cnt > 0 Then
-        For i as integer = 0 to msg_wrk_cnt - 1
-            Print #2, "" + hex4(msg_wrk(i).st) + " " + hex4(msg_wrk(i).ed) + " " + Str(msg_wrk(i).t)
-        Next
-    end if 
+SUB cmd_disp_message()
 
-End Sub
+    IF msg_wrk_cnt > 0 THEN
+        FOR i AS INTEGER = 0 TO msg_wrk_cnt - 1
+            PRINT #2, "" + hex4(msg_wrk(i).st) + " " + hex4(msg_wrk(i).ed) + " " + STR(msg_wrk(i).t)
+        NEXT
+    END IF 
+
+END SUB

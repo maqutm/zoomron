@@ -1,87 +1,87 @@
-function hex4(x as integer) as string
-    return right("000" + hex(x), 4)
-end function
+FUNCTION hex4(x AS INTEGER) AS STRING
+    RETURN RIGHT("000" + HEX(x), 4)
+END FUNCTION
 
-function hex2(x as integer) as string
-    return right("0" + hex(x), 2)
-end function
+FUNCTION hex2(x AS INTEGER) AS STRING
+    RETURN RIGHT("0" + HEX(x), 2)
+END FUNCTION
 
-function dump4(mem as ubyte ptr, st as integer, l as integer) as string
-    If l = 1 Then
-        return hex2(mem[st]) + "         "
-    ElseIf l = 2 Then
-        return hex2(mem[st]) + " " + hex2(mem[st + 1]) + "      "
-    ElseIf l = 3 Then
-        return hex2(mem[st]) + " " + hex2(mem[st + 1]) + " " + hex2(mem[st + 2]) + "   "
-    ElseIf l = 4 Then
-        return hex2(mem[st]) + " " + hex2(mem[st + 1]) + " " + hex2(mem[st + 2]) + " " + hex2(mem[st + 3])
-    End If
-end function
+FUNCTION dump4(mem AS UBYTE PTR, st AS INTEGER, l AS INTEGER) AS STRING
+    IF l = 1 THEN
+        RETURN hex2(mem[st]) + "         "
+    ELSEIF l = 2 THEN
+        RETURN hex2(mem[st]) + " " + hex2(mem[st + 1]) + "      "
+    ELSEIF l = 3 THEN
+        RETURN hex2(mem[st]) + " " + hex2(mem[st + 1]) + " " + hex2(mem[st + 2]) + "   "
+    ELSEIF l = 4 THEN
+        RETURN hex2(mem[st]) + " " + hex2(mem[st + 1]) + " " + hex2(mem[st + 2]) + " " + hex2(mem[st + 3])
+    END IF
+END FUNCTION
 
-function _min(a as integer, b as integer) as integer
-    if a > b Then
-        Return b
-    else
-        Return a
-    End If
-end function
+FUNCTION _min(a AS INTEGER, b AS INTEGER) AS INTEGER
+    IF a > b THEN
+        RETURN b
+    ELSE
+        RETURN a
+    END IF
+END FUNCTION
 
-function dump8(mem as ubyte ptr, st as integer, l as integer) as string
-    dim as string text
-    For i as integer = 0 to _min(7, l)
+FUNCTION dump8(mem AS UBYTE PTR, st AS INTEGER, l AS INTEGER) AS STRING
+    DIM AS STRING text
+    FOR i AS INTEGER = 0 TO _min(7, l)
         text = text + hex2(mem[st + i]) + " "
-    Next
-    text = text + space( 3 * (7 - l) )
+    NEXT
+    text = text + SPACE( 3 * (7 - l) )
 
-    Return text
-end function
+    RETURN text
+END FUNCTION
 
-function search_ubyte(mem as ubyte ptr, st as integer, dt as integer) as Integer
-    dim as ubyte c 
-    Do 
+FUNCTION search_ubyte(mem AS UBYTE PTR, st AS INTEGER, dt AS INTEGER) AS INTEGER
+    DIM AS UBYTE c 
+    DO 
         c = mem[st]
         ' Print #2, hex2(c);
-        if c = dt Then
+        IF c = dt THEN
             ' Print #2, ""
-            return st
-        end if
+            RETURN st
+        END IF
         st = st + 1
-    loop
-end function
+    LOOP
+END FUNCTION
 
-function is_display(c as ubyte) as boolean
-    return (c > &h1f and c < &h7f)
-end function
+FUNCTION is_display(c AS UBYTE) AS BOOLEAN
+    RETURN (c > &h1f AND c < &h7f)
+END FUNCTION
 
-function make_message(mem as ubyte ptr, st as integer, sz as integer) as string
+FUNCTION make_message(mem AS UBYTE PTR, st AS INTEGER, sz AS INTEGER) AS STRING
 
-    dim as string msg_out = ""
-    dim as boolean in_str = false
+    DIM AS STRING msg_out = ""
+    DIM AS BOOLEAN in_str = FALSE
 
-    for i as integer = 0  to sz
-        if i <> 0 and not in_str Then 
+    FOR i AS INTEGER = 0  TO sz
+        IF i <> 0 AND NOT in_str THEN 
             msg_out = msg_out + ", "
-        end if
-        dim as ubyte c = mem[st + i]
-        if is_display(c) Then
-            if in_str Then
-                msg_out = msg_out + Chr(c)
-            else 
-                msg_out = msg_out + "'" + Chr(c)
-            end if
-            in_str = true
-        else 
-            if in_str Then
+        END IF
+        DIM AS UBYTE c = mem[st + i]
+        IF is_display(c) THEN
+            IF in_str THEN
+                msg_out = msg_out + CHR(c)
+            ELSE 
+                msg_out = msg_out + "'" + CHR(c)
+            END IF
+            in_str = TRUE
+        ELSE 
+            IF in_str THEN
                 msg_out = msg_out + "', " + make_numeric_constant(c)
-            else 
+            ELSE 
                 msg_out = msg_out + make_numeric_constant(c)
-            end if
-            in_str = false
-        end if
-    next 
-    if in_str Then
+            END IF
+            in_str = FALSE
+        END IF
+    NEXT 
+    IF in_str THEN
         msg_out = msg_out + "'"
-    end if 
-    return msg_out
+    END IF 
+    RETURN msg_out
 
-end function
+END FUNCTION

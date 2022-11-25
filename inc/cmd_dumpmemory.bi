@@ -1,11 +1,15 @@
-Sub cmd_dump_memory()
+SUB cmd_dump_memory()
 
-    For i As Integer = buffer_start To buffer_end - 1 Step 8
-        If (buffer_end - i) < 7 Then
-            Print #2, hex4(i + adrs_offset) + " " + dump8(buffer, i, (buffer_end - i) Mod 8)
-        Else 
-            Print #2, hex4(i + adrs_offset) + " " + dump8(buffer, i, 8)
-        End If
-    Next
+    IF buffer_end = 0 THEN
+        RETURN
+    END IF
 
-End Sub
+    FOR i AS INTEGER = buffer_start TO buffer_end - 1 STEP 8
+        IF (buffer_end - i) < 7 THEN
+            PRINT #2, hex4(i + adrs_offset) + " " + dump8(buffer, i, (buffer_end - i) MOD 8)
+        ELSE 
+            PRINT #2, hex4(i + adrs_offset) + " " + dump8(buffer, i, 8)
+        END IF
+    NEXT
+
+END SUB

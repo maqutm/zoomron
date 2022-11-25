@@ -1,93 +1,96 @@
-Sub cmd_gen_source()
+SUB cmd_gen_source()
 
+    IF buffer_end = 0 THEN
+        RETURN
+    END IF
+    
     gen_pass = 1
 
-    For i As Integer = buffer_start To buffer_end - 1
+    FOR i AS INTEGER = buffer_start TO buffer_end - 1
         output_line = ""
-        after_call_ope = False
+        after_call_ope = FALSE
         last_call_adrs = -1
-        Dim As Integer ln = disasem(buffer, i)
+        DIM AS INTEGER ln = disasem(buffer, i)
         i = i + ln - 1
 
-        if after_call_ope Then
-            if check_label(last_call_adrs) Then
-                dim as adrs_wrk_t adrs = search_label(last_call_adrs)
-                if (adrs.t = call_label and adrs.sz = 2) Then
+        IF after_call_ope THEN
+            IF check_label(last_call_adrs) THEN
+                DIM AS adrs_wrk_t adrs = search_label(last_call_adrs)
+                IF (adrs.t = call_label AND adrs.sz = 2) THEN
                     make_msg(i + adrs_offset + 1, adrs.sz, word_data)
                     i = i + adrs.sz
-                elseif (adrs.t = call_label and adrs.sz = 1) Then
+                ELSEIF (adrs.t = call_label AND adrs.sz = 1) THEN
                     make_msg(i + adrs_offset + 1, adrs.sz, byte_data)
                     i = i + adrs.sz
-                elseIf (adrs.t = call_label and adrs.sz = 0) Then
-                    dim as integer ed = search_ubyte(buffer, i + 1, adrs.dt)
+                ELSEIF (adrs.t = call_label AND adrs.sz = 0) THEN
+                    DIM AS INTEGER ed = search_ubyte(buffer, i + 1, adrs.dt)
                     make_msg(i + adrs_offset + 1, ed - i, msg_data)
                     i = ed
-                end if
-            end if
-        end if
-    Next
+                END IF
+            END IF
+        END IF
+    NEXT
 
     gen_pass = 2
 
-    Dim as integer outf = FreeFile
-    Dim as string out_file_name
-    Print #2, "Output file name:"; 
-    Line Input #1, out_file_name
+    DIM AS INTEGER outf = FREEFILE
+    DIM AS STRING out_file_name
+    PRINT #2, "Output file name:"; 
+    LINE INPUT #1, out_file_name
 
-    Open out_file_name For Output As #outf
+    OPEN out_file_name FOR OUTPUT AS #outf
 
-    if adrs_wrk_cnt > 0 Then
-        For i as integer = 0 to adrs_wrk_cnt - 1
-            if adrs_wrk(i).st < adrs_offset or (adrs_offset + buffer_end) < adrs_wrk(i).st Then
-                Print #outf, "L" + hex4(adrs_wrk(i).st) + " EQU " + hex4(adrs_wrk(i).st) + "h"
-            else
+    IF adrs_wrk_cnt > 0 THEN
+        FOR i AS INTEGER = 0 TO adrs_wrk_cnt - 1
+            IF adrs_wrk(i).st < adrs_offset OR (adrs_offset + buffer_end) < adrs_wrk(i).st THEN
+                PRINT #outf, "L" + hex4(adrs_wrk(i).st) + " EQU " + hex4(adrs_wrk(i).st) + "h"
+            ELSE
                 ' if adrs_wrk(i).t = direct_access Then
                 ' else if adrs_wrk(i).t = direct_access_8 Then
                 ' else 
                 ' end if
-            end if
-        next
-    end if
+            END IF
+        NEXT
+    END IF
 
-    Print #outf, ""
-    Print #outf, "    ORG " + hex4(buffer_start + adrs_offset) + "h"
-    Print #outf, ""
+    PRINT #outf, ""
+    PRINT #outf, "    ORG " + hex4(buffer_start + adrs_offset) + "h"
+    PRINT #outf, ""
 
-    For i as integer = buffer_start to buffer_end - 1
+    FOR i AS INTEGER = buffer_start TO buffer_end - 1
 
-        dim as Boolean lbl = check_label(i + adrs_offset)
-        if lbl Then
-            Print #outf, "L" + hex4(i + adrs_offset) + ":"
-        end if
+        DIM AS BOOLEAN lbl = check_label(i + adrs_offset)
+        IF lbl THEN
+            PRINT #outf, "L" + hex4(i + adrs_offset) + ":"
+        END IF
 
         output_line = ""
-        after_call_ope = False
+        after_call_ope = FALSE
         last_call_adrs = -1
 
-        if check_msg(i + adrs_offset) Then
-            dim as msg_wrk_t msg = search_msg(i + adrs_offset)
-            ' Print #2, ":" + hex4(i + adrs_offset) + " " + hex4(msg.st) + " " + hex4(msg.ed) + " " + Str(msg.t)
+        IF check_msg(i + adrs_offset) THEN
+            DIM AS msg_wrk_t msg = search_msg(i + adrs_offset)
 
-            if msg.t = byte_data Then
-                Print #outf, "    DB " + make_numeric_constant(buffer[i])
-            elseIf msg.t = word_data Then
-                Print #outf, "    DW " + make_numeric_constant(buffer[i] + buffer[i + 1] * 256)
-            elseIf msg.t = msg_data Then
-                Print #outf, "    DB " + make_message(buffer, i, msg.ed - msg.st)
-            elseIf msg.t = zero_data Then
-                Print #outf, "    DS " + Str(msg.ed - msg.st + 1)
-            end if 
+            IF msg.t = byte_data THEN
+                PRINT #outf, "    DB " + make_numeric_constant(buffer[i])
+            ELSEIF msg.t = word_data THEN
+                PRINT #outf, "    DW " + make_numeric_constant(buffer[i] + buffer[i + 1] * 256)
+            ELSEIF msg.t = msg_data THEN
+                PRINT #outf, "    DB " + make_message(buffer, i, msg.ed - msg.st)
+            ELSEIF msg.t = zero_data THEN
+                PRINT #outf, "    DS " + STR(msg.ed - msg.st + 1)
+            END IF 
             i = msg.ed - adrs_offset
-        else 
-            dim as integer ln = disasem(buffer, i)
-            Print #outf, "    " + output_line
+        ELSE 
+            DIM AS INTEGER ln = disasem(buffer, i)
+            PRINT #outf, "    " + output_line
             i = i + ln - 1
-        end if
-    Next
+        END IF
+    NEXT
 
-    Print #outf, "    END"
-    Print #outf, ""
+    PRINT #outf, "    END"
+    PRINT #outf, ""
 
-    Close #outf
+    CLOSE #outf
 
-End Sub
+END SUB

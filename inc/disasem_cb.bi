@@ -1,16 +1,16 @@
-function disasem_cb(mem as ubyte ptr, st as integer) as integer
+FUNCTION disasem_cb(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
 	
-	dim as ubyte c = mem[st]
-	dim as integer d = (c and &hc0) / 64
-	dim as integer r0 = (c and &h38) / 8
-	dim as integer r1 = (c and &h7)
+	DIM AS UBYTE c = mem[st]
+	DIM AS INTEGER d = (c AND &hc0) / 64
+	DIM AS INTEGER r0 = (c AND &h38) / 8
+	DIM AS INTEGER r1 = (c AND &h7)
 	
-	If d = 0 THen
+	IF d = 0 THEN
 		out_text rot1(r0) + " " + reg8(r1)
-	Else
-		out_text bit0(d-1) + " " + str(r0) + "," + reg8(r1)
-	End If
+	ELSE
+		out_text bit0(d-1) + " " + STR(r0) + "," + reg8(r1)
+	END IF
 	
-	return 2
+	RETURN 2
 	
-end function
+END FUNCTION

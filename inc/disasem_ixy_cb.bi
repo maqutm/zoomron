@@ -1,20 +1,20 @@
-function disasem_ixy_cb(mem as ubyte ptr, st as integer, ixy as integer) as integer
+FUNCTION disasem_ixy_cb(mem AS UBYTE PTR, st AS INTEGER, ixy AS INTEGER) AS INTEGER
 	
-	dim as ubyte c = mem[st]
-	dim as integer d = (c and &hc0) / 64
-	dim as integer r0 = (c and &h38) / 8
-	dim as integer r1 = (c and &h7)
+	DIM AS UBYTE c = mem[st]
+	DIM AS INTEGER d = (c AND &hc0) / 64
+	DIM AS INTEGER r0 = (c AND &h38) / 8
+	DIM AS INTEGER r1 = (c AND &h7)
 	
-	If d = 0 and (r1 = 6) THen
+	IF d = 0 AND (r1 = 6) THEN
 		out_text rot1(r0) + " (" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-	ElseIf d = 0 and (r1 <> 6) THen
+	ELSEIF d = 0 AND (r1 <> 6) THEN
 		out_text rot1(r0) + " (" + ixreg(ixy) + dsp(mem[st + 2]) + ") :" + reg8(r1)
-	ElseIf (d <> 0) and (r1 = 6) THen
-		out_text bit0(d-1) + " " + str(r0) + ",(" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
-	ElseIf (d <> 0) and (r1 <> 6) THen
-		out_text bit0(d-1) + " " + str(r0) + ",(" + ixreg(ixy) + dsp(mem[st + 2]) + ") :" + reg8(r1)
-	End If
+	ELSEIF (d <> 0) AND (r1 = 6) THEN
+		out_text bit0(d-1) + " " + STR(r0) + ",(" + ixreg(ixy) + dsp(mem[st + 2]) + ")"
+	ELSEIF (d <> 0) AND (r1 <> 6) THEN
+		out_text bit0(d-1) + " " + STR(r0) + ",(" + ixreg(ixy) + dsp(mem[st + 2]) + ") :" + reg8(r1)
+	END IF
 	
-	return 4
+	RETURN 4
 	
-end function
+END FUNCTION

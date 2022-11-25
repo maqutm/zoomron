@@ -1,10 +1,14 @@
-Sub cmd_disasem()
+SUB cmd_disasem()
 
-        For i As Integer = buffer_start To buffer_end - 1
-            output_line = ""
-            Dim As Integer ln = disasem(buffer, i)
-            Print #2, hex4(i + adrs_offset) + " " + dump4(buffer, i, ln) + " " + output_line
-            i = i + ln - 1
-        Next
+    IF buffer_end = 0 THEN
+        RETURN
+    END IF
 
-End Sub
+    FOR i AS INTEGER = buffer_start TO buffer_end - 1
+        output_line = ""
+        DIM AS INTEGER ln = disasem(buffer, i)
+        PRINT #2, hex4(i + adrs_offset) + " " + dump4(buffer, i, ln) + " " + output_line
+        i = i + ln - 1
+    NEXT
+
+END SUB

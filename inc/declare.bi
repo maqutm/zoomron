@@ -1,111 +1,113 @@
 ' ================================================================================
 ' Enum
 ' ================================================================================
-Enum adrs_type
+ENUM adrs_type
 	immediate_data = 1
 	direct_access = 2
 	direct_access_8 = 3
 	jp_label = 4
 	call_label = 5
-End Enum
+END ENUM
 
-Enum msg_type
+ENUM msg_type
 	byte_data = 1
 	word_data = 2
 	msg_data = 3
 	zero_data = 4
-End Enum
+END ENUM
 
 ' ================================================================================
 ' Type 
 ' ================================================================================
-Type adrs_wrk_t
-	st As Integer
-	sz As Integer
-	dt As UByte
-	t As adrs_type
-End Type
+TYPE adrs_wrk_t
+	st AS INTEGER
+	sz AS INTEGER
+	dt AS UBYTE
+	t AS adrs_type
+END TYPE
 
-Type msg_wrk_t
-	st As Integer
-	ed As Integer
-	t As Integer
-End Type
+TYPE msg_wrk_t
+	st AS INTEGER
+	ed AS INTEGER
+	t AS msg_type
+END TYPE
 
 ' ================================================================================
 ' Const
 ' ================================================================================
-Const buffer_size = 1024 * 64
-Const adrs_wrk_size = 1000 * 4
-Const msg_wrk_size = 1000 * 4
+CONST buffer_size = 1024 * 64
+CONST adrs_wrk_size = 1000 * 4
+CONST msg_wrk_size = 1000 * 4
 
 ' ================================================================================
 ' Global
 ' ================================================================================
-Dim Shared As Integer adrs_offset = 0
+DIM SHARED AS INTEGER adrs_offset = 0
 
-Dim Shared As Integer adrs_wrk_cnt = 0
-Dim Shared As adrs_wrk_t adrs_wrk( adrs_wrk_size )
+DIM SHARED AS INTEGER adrs_wrk_cnt = 0
+DIM SHARED AS adrs_wrk_t adrs_wrk( adrs_wrk_size )
 
-Dim Shared As Integer msg_wrk_cnt = 0
-Dim Shared As msg_wrk_t msg_wrk( msg_wrk_size )
+DIM SHARED AS INTEGER msg_wrk_cnt = 0
+DIM SHARED AS msg_wrk_t msg_wrk( msg_wrk_size )
 
-Dim Shared As String output_line
-Dim Shared As Integer buffer_start
-Dim Shared As Integer buffer_end
-Dim Shared As Integer gen_pass = 0
-Dim shared as Boolean after_call_ope = False
-Dim shared as Integer last_call_adrs = 0
+DIM SHARED AS STRING output_line
+DIM SHARED AS INTEGER buffer_start = 0
+DIM SHARED AS INTEGER buffer_end = 0
+DIM SHARED AS INTEGER gen_pass = 0
+DIM SHARED AS BOOLEAN after_call_ope = FALSE
+DIM SHARED AS INTEGER last_call_adrs = 0
 
-dim shared as ubyte ptr buffer
+DIM SHARED AS UBYTE PTR buffer
+DIM SHARED AS INTEGER ftype = -1
+
 ' ================================================================================
 ' Sub & Function
 ' ================================================================================
-Declare Sub cmd_read_file()
-Declare Sub cmd_dump_memory()
-Declare Sub cmd_disasem()
-Declare Sub cmd_gen_source()
-Declare Sub cmd_set_label()
-Declare Sub cmd_set_message()
-Declare Sub cmd_disp_adrs()
-Declare Sub cmd_disp_label()
-Declare Sub cmd_disp_message()
+DECLARE SUB cmd_read_file()
+DECLARE SUB cmd_dump_memory()
+DECLARE SUB cmd_disasem()
+DECLARE SUB cmd_gen_source()
+DECLARE SUB cmd_set_label()
+DECLARE SUB cmd_set_message()
+DECLARE SUB cmd_disp_adrs()
+DECLARE SUB cmd_disp_label()
+DECLARE SUB cmd_disp_message()
 
-Declare Function disasem(mem As UByte Ptr, st As Integer) As Integer
-Declare Function disasem_cb(mem As UByte Ptr, st As Integer) As Integer
-Declare Function disasem_ed(mem As UByte Ptr, st As Integer) As Integer
-Declare Function disasem_ixy(mem As UByte Ptr, st As Integer, ixy As Integer) As Integer
-Declare Function disasem_ixy_cb(mem As UByte Ptr, st As Integer, ixy As Integer) As Integer
+DECLARE FUNCTION disasem(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
+DECLARE FUNCTION disasem_cb(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
+DECLARE FUNCTION disasem_ed(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
+DECLARE FUNCTION disasem_ixy(mem AS UBYTE PTR, st AS INTEGER, ixy AS INTEGER) AS INTEGER
+DECLARE FUNCTION disasem_ixy_cb(mem AS UBYTE PTR, st AS INTEGER, ixy AS INTEGER) AS INTEGER
 
-Declare function relativ(st as integer, e as ubyte) as integer
-Declare function dsp(e as ubyte) as string
+DECLARE FUNCTION relativ(st AS INTEGER, e AS UBYTE) AS INTEGER
+DECLARE FUNCTION dsp(e AS UBYTE) AS STRING
 
-Declare function ixreg16a(r16 as integer, ixy as integer) as string
-Declare function ixreg8(r8 as integer, ixy as integer) as string
+DECLARE FUNCTION ixreg16a(r16 AS INTEGER, ixy AS INTEGER) AS STRING
+DECLARE FUNCTION ixreg8(r8 AS INTEGER, ixy AS INTEGER) AS STRING
 
-Declare Sub out_text(s as string)
+DECLARE SUB out_text(s AS STRING)
 
-Declare function check_label(x as integer) as Boolean
-Declare function search_label(x as integer) as adrs_wrk_t
-Declare function make_label(x as integer, t as adrs_type, sz as integer = -1 , dt as integer = -1) as string
+DECLARE FUNCTION check_label(x AS INTEGER) AS BOOLEAN
+DECLARE FUNCTION search_label(x AS INTEGER) AS adrs_wrk_t
+DECLARE FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = -1 , dt AS INTEGER = -1) AS STRING
 
-Declare function check_msg(x as integer) as Boolean
-Declare function search_msg(x as integer) as msg_wrk_t
-Declare function make_msg(x as integer, sz as integer, t as msg_type) as string
+DECLARE FUNCTION check_msg(x AS INTEGER) AS BOOLEAN
+DECLARE FUNCTION search_msg(x AS INTEGER) AS msg_wrk_t
+DECLARE FUNCTION make_msg(x AS INTEGER, sz AS INTEGER, t AS msg_type) AS STRING
 
-Declare function make_numeric_constant(x as integer) as string
+DECLARE FUNCTION make_numeric_constant(x AS INTEGER) AS STRING
 
-Declare function is_display(c as ubyte) as boolean
-Declare function _min(a as integer, b as integer) as integer
+DECLARE FUNCTION is_display(c AS UBYTE) AS BOOLEAN
+DECLARE FUNCTION _min(a AS INTEGER, b AS INTEGER) AS INTEGER
 
-Declare function hex4(x as integer) as string
-Declare function hex2(x as integer) as string
+DECLARE FUNCTION hex4(x AS INTEGER) AS STRING
+DECLARE FUNCTION hex2(x AS INTEGER) AS STRING
 
-Declare function dump4(mem as ubyte ptr, st as integer, l as integer) as string
-Declare function dump8(mem as ubyte ptr, st as integer, l as integer) as string
+DECLARE FUNCTION dump4(mem AS UBYTE PTR, st AS INTEGER, l AS INTEGER) AS STRING
+DECLARE FUNCTION dump8(mem AS UBYTE PTR, st AS INTEGER, l AS INTEGER) AS STRING
 
-Declare function search_ubyte(mem as ubyte ptr, st as integer, dt as integer) as Integer
-Declare function make_message(mem as ubyte ptr, st as integer, sz as integer) as string
+DECLARE FUNCTION search_ubyte(mem AS UBYTE PTR, st AS INTEGER, dt AS INTEGER) AS INTEGER
+DECLARE FUNCTION make_message(mem AS UBYTE PTR, st AS INTEGER, sz AS INTEGER) AS STRING
 
 
 

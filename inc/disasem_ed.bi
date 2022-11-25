@@ -1,78 +1,78 @@
-function disasem_ed(mem as ubyte ptr, st as integer) as integer
+FUNCTION disasem_ed(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
 	
-	dim as ubyte c = mem[st]
-	dim as integer d = (c and &hc0) / 64
-	dim as integer r0 = (c and &h38) / 8
-	dim as integer r1 = (c and &h7)
-	dim as integer h = (c and &hf0) / 16
-	dim as integer l = c and &hf
+	DIM AS UBYTE c = mem[st]
+	DIM AS INTEGER d = (c AND &hc0) / 64
+	DIM AS INTEGER r0 = (c AND &h38) / 8
+	DIM AS INTEGER r1 = (c AND &h7)
+	DIM AS INTEGER h = (c AND &hf0) / 16
+	DIM AS INTEGER l = c AND &hf
 	
-	If c = &h70 Then
+	IF c = &h70 THEN
 		out_text "IN F,(C)"
-	ElseIf c = &h71 Then
+	ELSEIF c = &h71 THEN
 		out_text "OUT (C),0"
-	Elseif d = 1 and r1 = 0 Then
+	ELSEIF d = 1 AND r1 = 0 THEN
 		out_text "IN " + reg8(r0) + ",(C)"
-	Elseif d = 1 and r1 = 1 Then
+	ELSEIF d = 1 AND r1 = 1 THEN
 		out_text "OUT (C)," + reg8(r0)
-	Elseif d = 1 and l = 2 Then
-		out_text calc8(3) + " HL," + reg16(h and 3)
-	Elseif d = 1 and l = 3 Then
-		out_text "LD (" + make_label(mem[st + 1] + mem[st + 2] * 256, direct_access) +")," + reg16(h and 3)
-		return 4
-	Elseif d = 1 and l = 10 Then
-		out_text calc8(1) + " HL," + reg16(h and 3)
-	Elseif d = 1 and l = 11 Then
-		out_text "LD " + reg16(h and 3) +",(" + make_label(mem[st + 1] + mem[st + 2] * 256, direct_access) +")"
-		return 4
-	Elseif d = 1 and r1 = 4 Then
+	ELSEIF d = 1 AND l = 2 THEN
+		out_text calc8(3) + " HL," + reg16(h AND 3)
+	ELSEIF d = 1 AND l = 3 THEN
+		out_text "LD (" + make_label(mem[st + 1] + mem[st + 2] * 256, direct_access) +")," + reg16(h AND 3)
+		RETURN 4
+	ELSEIF d = 1 AND l = 10 THEN
+		out_text calc8(1) + " HL," + reg16(h AND 3)
+	ELSEIF d = 1 AND l = 11 THEN
+		out_text "LD " + reg16(h AND 3) +",(" + make_label(mem[st + 1] + mem[st + 2] * 256, direct_access) +")"
+		RETURN 4
+	ELSEIF d = 1 AND r1 = 4 THEN
 		'&h44
 		out_text "NEG"
-	Elseif d = 1 and (r0 and 1) = 0 and r1 = 5 Then
+	ELSEIF d = 1 AND (r0 AND 1) = 0 AND r1 = 5 THEN
 		'&h45
 		out_text "RETN"
-	Elseif d = 1 and (r0 and 1) = 1 and r1 = 5 Then
+	ELSEIF d = 1 AND (r0 AND 1) = 1 AND r1 = 5 THEN
 		'&h4d
 		out_text "RETI"
-	Elseif d = 1 and (r0 and 2) = 0 and r1 = 6 Then
+	ELSEIF d = 1 AND (r0 AND 2) = 0 AND r1 = 6 THEN
 		'&h46
 		out_text "IM 0"
-	Elseif d = 1 and (r0 and 3) = 2 and r1 = 6 Then
+	ELSEIF d = 1 AND (r0 AND 3) = 2 AND r1 = 6 THEN
 		'&h56
 		out_text "IM 1"
-	Elseif d = 1 and (r0 and 3) = 3 and r1 = 6 Then
+	ELSEIF d = 1 AND (r0 AND 3) = 3 AND r1 = 6 THEN
 		'&h5e
 		out_text "IM 2"
-	Elseif d = 2 and r0 = 4 and r1 < 4 Then
+	ELSEIF d = 2 AND r0 = 4 AND r1 < 4 THEN
 		out_text repti(r1)
-	Elseif d = 2 and r0 = 5 and r1 < 4 Then
+	ELSEIF d = 2 AND r0 = 5 AND r1 < 4 THEN
 		out_text reptd(r1)
-	Elseif d = 2 and r0 = 6 and r1 < 4 Then
+	ELSEIF d = 2 AND r0 = 6 AND r1 < 4 THEN
 		out_text reptir(r1)
-	Elseif d = 2 and r0 = 7 and r1 < 4 Then
+	ELSEIF d = 2 AND r0 = 7 AND r1 < 4 THEN
 		out_text reptdr(r1)
-	Elseif c = &h47 Then
+	ELSEIF c = &h47 THEN
 		out_text "LD I,A"
-	Elseif c = &h4f Then
+	ELSEIF c = &h4f THEN
 		out_text "LD R,A"
-	Elseif c = &h57 Then
+	ELSEIF c = &h57 THEN
 		out_text "LD A,I"
-	Elseif c = &h5f Then
+	ELSEIF c = &h5f THEN
 		out_text "LD A,R"
-	Elseif c = &h67 Then
+	ELSEIF c = &h67 THEN
 		out_text "RRD"
-	Elseif c = &h6f Then
+	ELSEIF c = &h6f THEN
 		out_text "RLD"
-	Elseif c = &h7f Then
+	ELSEIF c = &h7f THEN
 		out_text "LD R,R"
 '    Elseif d = 3 and r1 = 1 Then
 '        out_text "MULUB A," + reg8(r0)
 '    Elseif d = 3 and l = 3 Then
 '        out_text "MULUW HL," + reg16(h and 3)
-	Else
+	ELSE
 		out_text "DB 0EDh, " + make_numeric_constant(c)
-	End If
+	END IF
 	
-	return 2
+	RETURN 2
 	
-end function
+END FUNCTION
