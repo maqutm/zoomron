@@ -16,6 +16,14 @@ ENUM msg_type
 	zero_data = 4
 END ENUM
 
+ENUM binary_file_type
+    raw_data = 0
+	cpm_command = 1 
+	sos_binary = 2
+	mzt_format = 3
+	mzf_format = 4
+END ENUM
+
 ' ================================================================================
 ' Type 
 ' ================================================================================
@@ -87,12 +95,10 @@ DECLARE FUNCTION ixreg8(r8 AS INTEGER, ixy AS INTEGER) AS STRING
 
 DECLARE SUB out_text(s AS STRING)
 
-DECLARE FUNCTION check_label(x AS INTEGER) AS BOOLEAN
-DECLARE FUNCTION search_label(x AS INTEGER) AS adrs_wrk_t
+DECLARE FUNCTION search_label(x AS INTEGER) AS INTEGER
 DECLARE FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = -1 , dt AS INTEGER = -1) AS STRING
 
-DECLARE FUNCTION check_msg(x AS INTEGER) AS BOOLEAN
-DECLARE FUNCTION search_msg(x AS INTEGER) AS msg_wrk_t
+DECLARE FUNCTION search_msg(x AS INTEGER) AS INTEGER
 DECLARE FUNCTION make_msg(x AS INTEGER, sz AS INTEGER, t AS msg_type) AS STRING
 
 DECLARE FUNCTION make_numeric_constant(x AS INTEGER) AS STRING
@@ -109,5 +115,8 @@ DECLARE FUNCTION dump8(mem AS UBYTE PTR, st AS INTEGER, l AS INTEGER) AS STRING
 DECLARE FUNCTION search_ubyte(mem AS UBYTE PTR, st AS INTEGER, dt AS INTEGER) AS INTEGER
 DECLARE FUNCTION make_message(mem AS UBYTE PTR, st AS INTEGER, sz AS INTEGER) AS STRING
 
-
+DECLARE FUNCTION read_file(file_name as string) AS BOOLEAN
+DECLARE FUNCTION read_sos_binary() AS BOOLEAN
+DECLARE FUNCTION read_mzt_binary() AS BOOLEAN
+DECLARE FUNCTION read_mzf_binary() AS BOOLEAN
 

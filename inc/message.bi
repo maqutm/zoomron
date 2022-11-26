@@ -1,28 +1,16 @@
-FUNCTION check_msg(x AS INTEGER) AS BOOLEAN
+FUNCTION search_msg(x AS INTEGER) AS INTEGER
 	IF msg_wrk_cnt > 0 THEN
 		FOR j AS INTEGER = 0 TO msg_wrk_cnt -1
 			IF (msg_wrk(j).st = x) THEN
-				RETURN TRUE
-			END IF
-		NEXT
-	ELSE
-		RETURN FALSE
-	END IF
-END FUNCTION
-
-FUNCTION search_msg(x AS INTEGER) AS msg_wrk_t
-	IF msg_wrk_cnt > 0 THEN
-		FOR j AS INTEGER = 0 TO msg_wrk_cnt -1
-			IF (msg_wrk(j).st = x) THEN
-				RETURN msg_wrk(j)
+				RETURN j
 			END IF
 		NEXT
 	END IF
-    ERROR 100
+    RETURN -1
 END FUNCTION
 
 FUNCTION make_msg(x AS INTEGER, sz AS INTEGER, t AS msg_type) AS STRING
-	IF NOT check_msg(x) THEN
+	IF search_msg(x) = -1 THEN
 		msg_wrk(msg_wrk_cnt).st = x
 		msg_wrk(msg_wrk_cnt).ed = x + sz - 1
 		msg_wrk(msg_wrk_cnt).t = t

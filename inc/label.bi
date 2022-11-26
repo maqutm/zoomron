@@ -1,28 +1,16 @@
-FUNCTION check_label(x AS INTEGER) AS BOOLEAN
+FUNCTION search_label(x AS INTEGER) AS INTEGER
 	IF adrs_wrk_cnt > 0 THEN
 		FOR i AS INTEGER = 0 TO adrs_wrk_cnt -1
 			IF (adrs_wrk(i).st = x) THEN
-				RETURN TRUE
-			END IF
-		NEXT
-	ELSE
-		RETURN FALSE
-	END IF
-END FUNCTION
-
-FUNCTION search_label(x AS INTEGER) AS adrs_wrk_t
-	IF adrs_wrk_cnt > 0 THEN
-		FOR i AS INTEGER = 0 TO adrs_wrk_cnt -1
-			IF (adrs_wrk(i).st = x) THEN
-				RETURN adrs_wrk(i)
+				RETURN i
 			END IF
 		NEXT
 	END IF
-    ERROR 100
+    RETURN -1
 END FUNCTION
 
 FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = -1 , dt AS INTEGER = -1) AS STRING
-	IF NOT check_label(x) THEN
+	IF search_label(x) = -1 THEN
 		adrs_wrk(adrs_wrk_cnt).st = x
 		adrs_wrk(adrs_wrk_cnt).sz = sz
 		adrs_wrk(adrs_wrk_cnt).dt = dt

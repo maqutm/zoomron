@@ -14,8 +14,9 @@ SUB cmd_gen_source()
         i = i + ln - 1
 
         IF after_call_ope THEN
-            IF check_label(last_call_adrs) THEN
-                DIM AS adrs_wrk_t adrs = search_label(last_call_adrs)
+            DIM AS INTEGER idx = search_label(last_call_adrs)
+            IF idx <> -1 THEN
+                DIM AS adrs_wrk_t adrs = adrs_wrk(idx)
                 IF (adrs.t = call_label AND adrs.sz = 2) THEN
                     make_msg(i + adrs_offset + 1, adrs.sz, word_data)
                     i = i + adrs.sz
@@ -59,8 +60,8 @@ SUB cmd_gen_source()
 
     FOR i AS INTEGER = buffer_start TO buffer_end - 1
 
-        DIM AS BOOLEAN lbl = check_label(i + adrs_offset)
-        IF lbl THEN
+        DIM AS INTEGER lbl = search_label(i + adrs_offset)
+        IF lbl <> -1 THEN
             PRINT #outf, "L" + hex4(i + adrs_offset) + ":"
         END IF
 
@@ -68,8 +69,9 @@ SUB cmd_gen_source()
         after_call_ope = FALSE
         last_call_adrs = -1
 
-        IF check_msg(i + adrs_offset) THEN
-            DIM AS msg_wrk_t msg = search_msg(i + adrs_offset)
+        DIM AS INTEGER idx = search_msg(i + adrs_offset)
+        IF idx <> -1 THEN
+            DIM AS msg_wrk_t msg = msg_wrk(idx)
 
             IF msg.t = byte_data THEN
                 PRINT #outf, "    DB " + make_numeric_constant(buffer[i])
