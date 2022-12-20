@@ -120,3 +120,5 @@ DECLARE FUNCTION read_sos_binary() AS BOOLEAN
 DECLARE FUNCTION read_mzt_binary() AS BOOLEAN
 DECLARE FUNCTION read_mzf_binary() AS BOOLEAN
 
+DECLARE SUB ge_source_pass_1()
+DECLARE SUB ge_source_pass_2(out_file_name AS STRING)
