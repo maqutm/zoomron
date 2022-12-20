@@ -1,3 +1,3 @@
-@cheo off
+@echo off
 set FBC=
-%FCB% disasem.bas -o disasem -strip
+%FBC% disasem.bas -o disasem -strip
