@@ -9,13 +9,21 @@ FUNCTION search_label(x AS INTEGER) AS INTEGER
     RETURN -1
 END FUNCTION
 
-FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = -1 , dt AS INTEGER = -1) AS STRING
-	IF search_label(x) = -1 THEN
-		adrs_wrk(adrs_wrk_cnt).st = x
-		adrs_wrk(adrs_wrk_cnt).sz = sz
-		adrs_wrk(adrs_wrk_cnt).dt = dt
-		adrs_wrk(adrs_wrk_cnt).t = t
+FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = 0 , dt AS INTEGER = 0, n AS STRING = "") AS STRING
+    DIM AS INTEGER lbl = search_label(x)
+	IF lbl = -1 THEN
+	    lbl = adrs_wrk_cnt
 		adrs_wrk_cnt = adrs_wrk_cnt + 1
+
+		adrs_wrk(lbl).st = x
+		adrs_wrk(lbl).sz = sz
+		adrs_wrk(lbl).dt = dt
+		adrs_wrk(lbl).t = t
+		if n = "" THEN
+			adrs_wrk(lbl).n = "L" + hex4(x)
+		ELSE 
+			adrs_wrk(lbl).n = n
+		END IF
 
         IF (t = direct_access) THEN
 		    make_msg(x, 2, word_data)
@@ -26,6 +34,6 @@ FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = -1 , dt AS INT
 	IF gen_pass <> 2 THEN
 		RETURN hex4(x) + "h"
 	ELSE
-		RETURN "L" + hex4(x)
+		RETURN adrs_wrk(lbl).n
 	END IF
 END FUNCTION

@@ -1,4 +1,4 @@
-SUB cmd_gen_source()
+SUB cmd_gen_source(out_file_name AS STRING)
 
     IF buffer_end = 0 THEN
         RETURN
@@ -9,11 +9,6 @@ SUB cmd_gen_source()
     ge_source_pass_1
 
     gen_pass = 2
-
-    DIM AS STRING out_file_name
-
-    PRINT #2, "Output file name:"; 
-    LINE INPUT #1, out_file_name
 
     ge_source_pass_2(out_file_name)
 
@@ -58,7 +53,7 @@ SUB ge_source_pass_2(out_file_name AS STRING)
         IF adrs_wrk_cnt > 0 THEN
             FOR i AS INTEGER = 0 TO adrs_wrk_cnt - 1
                 IF adrs_wrk(i).st < adrs_offset OR (adrs_offset + buffer_end) < adrs_wrk(i).st THEN
-                    PRINT #outf, "L" + hex4(adrs_wrk(i).st) + " EQU " + hex4(adrs_wrk(i).st) + "h"
+                    PRINT #outf, adrs_wrk(i).n + " EQU " + hex4(adrs_wrk(i).st) + "h"
                 ELSE
                     ' if adrs_wrk(i).t = direct_access Then
                     ' else if adrs_wrk(i).t = direct_access_8 Then
@@ -76,7 +71,7 @@ SUB ge_source_pass_2(out_file_name AS STRING)
 
             DIM AS INTEGER lbl = search_label(i + adrs_offset)
             IF lbl <> -1 THEN
-                PRINT #outf, "L" + hex4(i + adrs_offset) + ":"
+                PRINT #outf, adrs_wrk(lbl).n + ":"
             END IF
 
             output_line = ""

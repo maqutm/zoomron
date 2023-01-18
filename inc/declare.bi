@@ -32,6 +32,7 @@ TYPE adrs_wrk_t
 	sz AS INTEGER
 	dt AS UBYTE
 	t AS adrs_type
+	n AS STRING
 END TYPE
 
 TYPE msg_wrk_t
@@ -71,15 +72,19 @@ DIM SHARED AS INTEGER ftype = -1
 ' ================================================================================
 ' Sub & Function
 ' ================================================================================
-DECLARE SUB cmd_read_file()
-DECLARE SUB cmd_dump_memory()
-DECLARE SUB cmd_disasem()
-DECLARE SUB cmd_gen_source()
-DECLARE SUB cmd_set_label()
-DECLARE SUB cmd_set_message()
+DECLARE SUB cmd_read_file(file_name AS STRING, ft AS binary_file_type)
+DECLARE SUB cmd_dump_memory(st AS INTEGER, ed AS INTEGER)
+DECLARE SUB cmd_disasem(st AS INTEGER, ed AS INTEGER)
+DECLARE SUB cmd_gen_source(out_file_name AS STRING)
 DECLARE SUB cmd_disp_adrs()
 DECLARE SUB cmd_disp_label()
 DECLARE SUB cmd_disp_message()
+DECLARE SUB cmd_load_label(in_file_name AS STRING)
+DECLARE SUB cmd_load_message(in_file_name AS STRING)
+DECLARE SUB cmd_save_label(out_file_name AS STRING)
+DECLARE SUB cmd_save_message(out_file_name AS STRING)
+DECLARE SUB cmd_set_label(p0 AS INTEGER, t AS adrs_type, p1 AS INTEGER, p2 AS INTEGER, n AS STRING)
+DECLARE SUB cmd_set_message(p0 AS INTEGER, p1 AS INTEGER, t AS msg_type)
 
 DECLARE FUNCTION disasem(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
 DECLARE FUNCTION disasem_cb(mem AS UBYTE PTR, st AS INTEGER) AS INTEGER
@@ -96,10 +101,10 @@ DECLARE FUNCTION ixreg8(r8 AS INTEGER, ixy AS INTEGER) AS STRING
 DECLARE SUB out_text(s AS STRING)
 
 DECLARE FUNCTION search_label(x AS INTEGER) AS INTEGER
-DECLARE FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = -1 , dt AS INTEGER = -1) AS STRING
+DECLARE FUNCTION make_label(x AS INTEGER, t AS adrs_type, sz AS INTEGER = 0 , dt AS INTEGER = 0, n AS STRING = "") AS STRING
 
 DECLARE FUNCTION search_msg(x AS INTEGER) AS INTEGER
-DECLARE FUNCTION make_msg(x AS INTEGER, sz AS INTEGER, t AS msg_type) AS STRING
+DECLARE SUB make_msg(x AS INTEGER, sz AS INTEGER, t AS msg_type)
 
 DECLARE FUNCTION make_numeric_constant(x AS INTEGER) AS STRING
 
